@@ -1,11 +1,10 @@
 import { useState, useMemo } from "react";
 import { SignalCard } from "@/components/SignalCard";
 import { signals } from "@/data/mockData";
-import { Search } from "lucide-react";
+import { Search, Send } from "lucide-react";
 
-const assets = ["All", ...new Set(signals.map((s) => s.asset))];
 const channels = ["All", ...new Set(signals.map((s) => s.source))];
-const statuses = ["All", "Open", "TP Hit", "SL Hit"];
+const statuses = ["All", "Live", "TP Hit", "SL Hit"];
 
 function FilterChip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
   return (
@@ -21,33 +20,32 @@ function FilterChip({ label, active, onClick }: { label: string; active: boolean
 }
 
 export default function Signals() {
-  const [assetFilter, setAssetFilter] = useState("All");
   const [channelFilter, setChannelFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
 
   const filtered = useMemo(() => {
     return signals.filter((s) => {
-      if (assetFilter !== "All" && s.asset !== assetFilter) return false;
       if (channelFilter !== "All" && s.source !== channelFilter) return false;
       if (statusFilter !== "All" && s.status !== statusFilter) return false;
       return true;
     });
-  }, [assetFilter, channelFilter, statusFilter]);
+  }, [channelFilter, statusFilter]);
+
+  const liveCount = filtered.filter((s) => s.status === "Live").length;
 
   return (
     <div className="space-y-6 max-w-5xl">
       <div>
-        <h1 className="text-2xl font-bold text-foreground text-balance">Signals Feed</h1>
-        <p className="text-sm text-muted-foreground mt-1">{filtered.length} signals</p>
+        <h1 className="text-2xl font-bold text-foreground text-balance">XAUUSD Signals</h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          {filtered.length} signals · {liveCount} live
+          <span className="ml-2 inline-flex items-center gap-1 text-muted-foreground/60">
+            <Send className="h-3 w-3" /> via Telegram
+          </span>
+        </p>
       </div>
 
       <div className="glass-card p-4 space-y-3">
-        <div className="flex flex-wrap gap-2 items-center">
-          <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider mr-1">Asset</span>
-          {assets.map((a) => (
-            <FilterChip key={a} label={a} active={assetFilter === a} onClick={() => setAssetFilter(a)} />
-          ))}
-        </div>
         <div className="flex flex-wrap gap-2 items-center">
           <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider mr-1">Channel</span>
           {channels.map((c) => (
@@ -75,7 +73,7 @@ export default function Signals() {
           <Search className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
           <p className="text-muted-foreground">No signals match your filters</p>
           <button
-            onClick={() => { setAssetFilter("All"); setChannelFilter("All"); setStatusFilter("All"); }}
+            onClick={() => { setChannelFilter("All"); setStatusFilter("All"); }}
             className="text-primary text-sm mt-2 hover:underline"
           >
             Clear filters

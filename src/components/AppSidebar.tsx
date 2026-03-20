@@ -1,4 +1,4 @@
-import { LayoutDashboard, Radio, Users, BarChart3, Settings } from "lucide-react";
+import { LayoutDashboard, Radio, Users, BarChart3, Settings, Bot } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import {
@@ -15,7 +15,7 @@ import {
 const items = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Signals", url: "/signals", icon: Radio },
-  { title: "Providers", url: "/providers", icon: Users },
+  { title: "Channels", url: "/providers", icon: Users },
   { title: "Analytics", url: "/analytics", icon: BarChart3 },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
@@ -23,16 +23,18 @@ const items = [
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const location = useLocation();
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       <div className="flex items-center gap-2 px-4 py-5 border-b border-sidebar-border">
         <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
-          <span className="text-primary-foreground font-bold text-sm">TF</span>
+          <Bot className="h-4 w-4 text-primary-foreground" />
         </div>
         {!collapsed && (
-          <span className="text-foreground font-semibold text-lg tracking-tight">TradeFlow</span>
+          <div>
+            <span className="text-foreground font-semibold text-lg tracking-tight leading-none">TradeFlow</span>
+            <p className="text-[10px] text-muted-foreground leading-none mt-0.5">XAUUSD · Telegram</p>
+          </div>
         )}
       </div>
       <SidebarContent className="pt-4">
@@ -58,6 +60,12 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      {!collapsed && (
+        <div className="mt-auto p-4 border-t border-sidebar-border">
+          <p className="text-[10px] text-muted-foreground/50 text-center">Powered by TradeFlow Bot</p>
+        </div>
+      )}
     </Sidebar>
   );
 }
