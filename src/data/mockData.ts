@@ -5,9 +5,12 @@ export interface Signal {
   entry: number;
   tp: number;
   sl: number;
-  status: "Open" | "TP Hit" | "SL Hit";
+  currentPrice: number;
+  status: "Live" | "TP Hit" | "SL Hit";
   source: string;
+  destination: string;
   timestamp: string;
+  delaySeconds: number;
 }
 
 export interface Provider {
@@ -17,46 +20,67 @@ export interface Provider {
   totalSignals: number;
   score: number;
   avatar: string;
+  platform: string;
+}
+
+const now = new Date("2026-03-20T09:30:00Z");
+
+function minsAgo(mins: number) {
+  return new Date(now.getTime() - mins * 60000).toISOString();
 }
 
 export const signals: Signal[] = [
-  { id: "1", asset: "BTC/USDT", type: "BUY", entry: 67250, tp: 69500, sl: 66000, status: "Open", source: "Alpha Signals", timestamp: "2026-03-20T09:14:00Z" },
-  { id: "2", asset: "ETH/USDT", type: "BUY", entry: 3480, tp: 3650, sl: 3380, status: "TP Hit", source: "CryptoVault", timestamp: "2026-03-20T08:30:00Z" },
-  { id: "3", asset: "GOLD", type: "SELL", entry: 2185, tp: 2140, sl: 2210, status: "SL Hit", source: "FX Masters", timestamp: "2026-03-20T07:45:00Z" },
-  { id: "4", asset: "EUR/USD", type: "BUY", entry: 1.0845, tp: 1.0920, sl: 1.0790, status: "Open", source: "FX Masters", timestamp: "2026-03-20T06:20:00Z" },
-  { id: "5", asset: "SOL/USDT", type: "SELL", entry: 142.5, tp: 132, sl: 148, status: "TP Hit", source: "Alpha Signals", timestamp: "2026-03-19T22:10:00Z" },
-  { id: "6", asset: "BTC/USDT", type: "SELL", entry: 68100, tp: 66500, sl: 69000, status: "TP Hit", source: "Whale Watch", timestamp: "2026-03-19T18:05:00Z" },
-  { id: "7", asset: "GBP/JPY", type: "BUY", entry: 191.45, tp: 193.20, sl: 190.50, status: "Open", source: "FX Masters", timestamp: "2026-03-19T15:30:00Z" },
-  { id: "8", asset: "AVAX/USDT", type: "BUY", entry: 38.2, tp: 42.5, sl: 36, status: "SL Hit", source: "CryptoVault", timestamp: "2026-03-19T12:00:00Z" },
-  { id: "9", asset: "SILVER", type: "BUY", entry: 24.85, tp: 25.80, sl: 24.20, status: "TP Hit", source: "Whale Watch", timestamp: "2026-03-19T10:15:00Z" },
-  { id: "10", asset: "DOGE/USDT", type: "SELL", entry: 0.1245, tp: 0.1100, sl: 0.1320, status: "Open", source: "Alpha Signals", timestamp: "2026-03-19T08:40:00Z" },
+  { id: "1", asset: "XAUUSD", type: "BUY", entry: 2185.40, tp: 2198.00, sl: 2178.00, currentPrice: 2191.75, status: "Live", source: "GoldSignals VIP", destination: "TradeFlow Feed", timestamp: minsAgo(3), delaySeconds: 1.2 },
+  { id: "2", asset: "XAUUSD", type: "SELL", entry: 2192.80, tp: 2180.00, sl: 2200.00, currentPrice: 2183.50, status: "TP Hit", source: "XAU Premium", destination: "TradeFlow Feed", timestamp: minsAgo(47), delaySeconds: 0.8 },
+  { id: "3", asset: "XAUUSD", type: "BUY", entry: 2178.60, tp: 2190.00, sl: 2172.00, currentPrice: 2190.00, status: "TP Hit", source: "GoldSignals VIP", destination: "TradeFlow Feed", timestamp: minsAgo(128), delaySeconds: 1.1 },
+  { id: "4", asset: "XAUUSD", type: "SELL", entry: 2196.20, tp: 2184.00, sl: 2203.00, currentPrice: 2203.00, status: "SL Hit", source: "Gold Elite Room", destination: "TradeFlow Feed", timestamp: minsAgo(195), delaySeconds: 1.5 },
+  { id: "5", asset: "XAUUSD", type: "BUY", entry: 2170.50, tp: 2182.00, sl: 2164.00, currentPrice: 2182.00, status: "TP Hit", source: "XAU Premium", destination: "TradeFlow Feed", timestamp: minsAgo(310), delaySeconds: 0.9 },
+  { id: "6", asset: "XAUUSD", type: "SELL", entry: 2188.90, tp: 2176.00, sl: 2196.00, currentPrice: 2176.00, status: "TP Hit", source: "GoldSignals VIP", destination: "TradeFlow Feed", timestamp: minsAgo(420), delaySeconds: 1.3 },
+  { id: "7", asset: "XAUUSD", type: "BUY", entry: 2165.30, tp: 2178.00, sl: 2158.00, currentPrice: 2175.40, status: "Live", source: "Gold Elite Room", destination: "TradeFlow Feed", timestamp: minsAgo(15), delaySeconds: 1.0 },
+  { id: "8", asset: "XAUUSD", type: "SELL", entry: 2201.10, tp: 2188.00, sl: 2208.00, currentPrice: 2188.00, status: "TP Hit", source: "XAU Premium", destination: "TradeFlow Feed", timestamp: minsAgo(540), delaySeconds: 0.7 },
+  { id: "9", asset: "XAUUSD", type: "BUY", entry: 2175.80, tp: 2188.00, sl: 2168.00, currentPrice: 2168.00, status: "SL Hit", source: "GoldSignals VIP", destination: "TradeFlow Feed", timestamp: minsAgo(680), delaySeconds: 1.4 },
+  { id: "10", asset: "XAUUSD", type: "BUY", entry: 2182.20, tp: 2195.00, sl: 2175.00, currentPrice: 2189.60, status: "Live", source: "Gold Elite Room", destination: "TradeFlow Feed", timestamp: minsAgo(8), delaySeconds: 0.6 },
 ];
 
 export const providers: Provider[] = [
-  { id: "1", name: "Alpha Signals", winRate: 74, totalSignals: 312, score: 92, avatar: "AS" },
-  { id: "2", name: "CryptoVault", winRate: 68, totalSignals: 198, score: 85, avatar: "CV" },
-  { id: "3", name: "FX Masters", winRate: 71, totalSignals: 456, score: 88, avatar: "FM" },
-  { id: "4", name: "Whale Watch", winRate: 79, totalSignals: 127, score: 94, avatar: "WW" },
+  { id: "1", name: "GoldSignals VIP", winRate: 76, totalSignals: 284, score: 93, avatar: "GS", platform: "Telegram" },
+  { id: "2", name: "XAU Premium", winRate: 72, totalSignals: 198, score: 88, avatar: "XP", platform: "Telegram" },
+  { id: "3", name: "Gold Elite Room", winRate: 69, totalSignals: 156, score: 82, avatar: "GE", platform: "Telegram" },
 ];
 
 export const performanceData = [
-  { date: "Mar 1", pnl: 2.1, winRate: 68 },
-  { date: "Mar 3", pnl: 4.8, winRate: 72 },
-  { date: "Mar 5", pnl: 3.2, winRate: 65 },
-  { date: "Mar 7", pnl: 7.5, winRate: 78 },
-  { date: "Mar 9", pnl: 6.1, winRate: 74 },
-  { date: "Mar 11", pnl: 9.3, winRate: 80 },
-  { date: "Mar 13", pnl: 8.0, winRate: 76 },
-  { date: "Mar 15", pnl: 11.2, winRate: 82 },
-  { date: "Mar 17", pnl: 10.4, winRate: 79 },
-  { date: "Mar 19", pnl: 13.7, winRate: 84 },
-  { date: "Mar 20", pnl: 14.2, winRate: 82 },
+  { date: "Mar 1", pnl: 1.8, winRate: 70 },
+  { date: "Mar 3", pnl: 3.5, winRate: 68 },
+  { date: "Mar 5", pnl: 2.9, winRate: 72 },
+  { date: "Mar 7", pnl: 6.2, winRate: 78 },
+  { date: "Mar 9", pnl: 5.4, winRate: 75 },
+  { date: "Mar 11", pnl: 8.1, winRate: 80 },
+  { date: "Mar 13", pnl: 7.3, winRate: 77 },
+  { date: "Mar 15", pnl: 10.5, winRate: 82 },
+  { date: "Mar 17", pnl: 9.8, winRate: 79 },
+  { date: "Mar 19", pnl: 12.4, winRate: 83 },
+  { date: "Mar 20", pnl: 13.1, winRate: 81 },
 ];
 
-export const assetPerformance = [
-  { asset: "BTC/USDT", winRate: 78, pnl: 5.2, trades: 42 },
-  { asset: "ETH/USDT", winRate: 72, pnl: 3.8, trades: 35 },
-  { asset: "GOLD", winRate: 65, pnl: 1.4, trades: 28 },
-  { asset: "EUR/USD", winRate: 70, pnl: 2.1, trades: 51 },
-  { asset: "SOL/USDT", winRate: 80, pnl: 4.6, trades: 18 },
-];
+export const botStatus = {
+  status: "running" as "running" | "offline",
+  signalsToday: 24,
+  avgDelay: 1.04,
+  uptime: "99.7%",
+};
+
+export function timeAgo(timestamp: string): string {
+  const diff = now.getTime() - new Date(timestamp).getTime();
+  const secs = Math.floor(diff / 1000);
+  if (secs < 60) return `${secs}s ago`;
+  const mins = Math.floor(secs / 60);
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  return `${Math.floor(hrs / 24)}d ago`;
+}
+
+export function pipsMoved(entry: number, current: number, type: "BUY" | "SELL"): number {
+  const diff = type === "BUY" ? current - entry : entry - current;
+  return Math.round(diff * 10) / 10; // XAUUSD pips = price points
+}

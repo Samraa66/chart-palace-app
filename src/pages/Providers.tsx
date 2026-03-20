@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { providers } from "@/data/mockData";
-import { ArrowUpDown, TrendingUp, Radio, Star } from "lucide-react";
+import { ArrowUpDown, TrendingUp, Radio, Star, Send } from "lucide-react";
 
 type SortKey = "score" | "winRate" | "totalSignals";
 
@@ -11,8 +11,8 @@ export default function Providers() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-2xl font-bold text-foreground text-balance">Signal Providers</h1>
-        <p className="text-sm text-muted-foreground mt-1">{providers.length} active providers</p>
+        <h1 className="text-2xl font-bold text-foreground text-balance">Signal Channels</h1>
+        <p className="text-sm text-muted-foreground mt-1">{providers.length} Telegram channels tracked</p>
       </div>
 
       <div className="flex items-center gap-2">
@@ -43,13 +43,18 @@ export default function Providers() {
             </div>
 
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-foreground">{p.name}</h3>
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold text-foreground">{p.name}</h3>
+                <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 bg-secondary px-1.5 py-0.5 rounded">
+                  <Send className="h-2.5 w-2.5" /> {p.platform}
+                </span>
+              </div>
               <div className="flex items-center gap-4 mt-1">
                 <span className="flex items-center gap-1 text-xs text-muted-foreground">
                   <TrendingUp className="h-3 w-3" /> {p.winRate}% win rate
                 </span>
                 <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Radio className="h-3 w-3" /> {p.totalSignals} signals
+                  <Radio className="h-3 w-3" /> {p.totalSignals} XAUUSD signals
                 </span>
               </div>
             </div>
