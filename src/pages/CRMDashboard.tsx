@@ -20,9 +20,13 @@ export default function CRMDashboard() {
   const selectedLead = leads.find((l) => l.id === selectedLeadId) ?? null;
   const leadMessages = selectedLeadId ? allMessages.filter((m) => m.leadId === selectedLeadId) : [];
 
+  // Sorted leads for "next lead" logic
+  const sortedLeads = [...leads].sort(
+    (a, b) => new Date(a.stageEnteredAt).getTime() - new Date(b.stageEnteredAt).getTime()
+  );
+
   const handleSelectLead = useCallback((id: string) => {
     setSelectedLeadId(id);
-    // Clear unread
     setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, unread: 0 } : l)));
     if (isMobile) setMobileView("chat");
   }, [isMobile]);
@@ -43,6 +47,15 @@ export default function CRMDashboard() {
     setLeads((prev) => prev.map((l) => (l.id === updated.id ? updated : l)));
   }, []);
 
+  const handleNextLead = useCallback(() => {
+    const currentIndex = sortedLeads.findIndex((l) => l.id === selectedLeadId);
+    const nextIndex = (currentIndex + 1) % sortedLeads.length;
+    const nextLead = sortedLeads[nextIndex];
+    if (nextLead) {
+      handleSelectLead(nextLead.id);
+    }
+  }, [sortedLeads, selectedLeadId, handleSelectLead]);
+
   // Mobile layout
   if (isMobile) {
     return (
@@ -61,7 +74,7 @@ export default function CRMDashboard() {
               </button>
             </div>
             <div className="flex-1 min-h-0">
-              <ChatPanel lead={selectedLead} messages={leadMessages} onSendMessage={handleSendMessage} />
+              <ChatPanel lead={selectedLead} messages={leadMessages} onSendMessage={handleSendMessage} onNextLead={handleNextLead} />
             </div>
           </div>
         )}
@@ -85,23 +98,18 @@ export default function CRMDashboard() {
   // Desktop layout
   return (
     <div className="h-[calc(100vh-3.5rem)] flex -m-4 md:-m-6">
-      {/* Left: Lead list */}
       <div className="w-80 shrink-0">
         <LeadList leads={leads} selectedLeadId={selectedLeadId} onSelectLead={handleSelectLead} />
       </div>
-
-      {/* Center: Chat */}
       <div className="flex-1 min-w-0">
         {selectedLead ? (
-          <ChatPanel lead={selectedLead} messages={leadMessages} onSendMessage={handleSendMessage} />
+          <ChatPanel lead={selectedLead} messages={leadMessages} onSendMessage={handleSendMessage} onNextLead={handleNextLead} />
         ) : (
           <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
             Select a lead to start chatting
           </div>
         )}
       </div>
-
-      {/* Right: Details */}
       {selectedLead && showDetails && (
         <div className="w-72 shrink-0">
           <LeadDetails lead={selectedLead} onUpdateLead={handleUpdateLead} />

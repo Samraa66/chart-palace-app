@@ -1,4 +1,4 @@
-import { Search, Filter } from "lucide-react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Lead, Stage, STAGES, STAGE_COLORS, STAGE_TEXT_COLORS, formatTimeInStage } from "@/data/crmData";
@@ -8,6 +8,14 @@ interface LeadListProps {
   leads: Lead[];
   selectedLeadId: string | null;
   onSelectLead: (id: string) => void;
+}
+
+function getUrgencyLevel(stageEnteredAt: string): "critical" | "high" | "normal" {
+  const now = new Date("2026-03-24T14:30:00Z");
+  const hrs = (now.getTime() - new Date(stageEnteredAt).getTime()) / 3600000;
+  if (hrs >= 48) return "critical";
+  if (hrs >= 12) return "high";
+  return "normal";
 }
 
 export function LeadList({ leads, selectedLeadId, onSelectLead }: LeadListProps) {
@@ -55,44 +63,58 @@ export function LeadList({ leads, selectedLeadId, onSelectLead }: LeadListProps)
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        {filtered.map((lead) => (
-          <button
-            key={lead.id}
-            onClick={() => onSelectLead(lead.id)}
-            className={cn(
-              "w-full flex items-center gap-3 px-3 py-3 border-b border-border/50 transition-colors text-left",
-              selectedLeadId === lead.id ? "bg-accent" : "hover:bg-secondary/50"
-            )}
-          >
-            <div className="relative shrink-0">
-              <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center text-sm font-medium text-foreground">
-                {lead.avatar}
-              </div>
-              {lead.unread > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-primary text-[10px] font-bold text-primary-foreground flex items-center justify-center">
-                  {lead.unread}
-                </span>
+        {filtered.map((lead) => {
+          const urgency = getUrgencyLevel(lead.stageEnteredAt);
+          return (
+            <button
+              key={lead.id}
+              onClick={() => onSelectLead(lead.id)}
+              className={cn(
+                "w-full flex items-center gap-3 px-3 py-3 border-b border-border/50 transition-colors text-left",
+                selectedLeadId === lead.id ? "bg-accent" : "hover:bg-secondary/50",
+                urgency === "critical" && selectedLeadId !== lead.id && "bg-destructive/5 hover:bg-destructive/10",
+                urgency === "high" && selectedLeadId !== lead.id && "bg-stage-hesitant/5 hover:bg-stage-hesitant/10"
               )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-foreground truncate">{lead.name}</span>
-                <span className="text-[10px] text-muted-foreground shrink-0 ml-2">
-                  {formatTimeInStage(lead.stageEnteredAt)}
-                </span>
+            >
+              <div className="relative shrink-0">
+                <div className={cn(
+                  "h-10 w-10 rounded-full bg-secondary flex items-center justify-center text-sm font-medium text-foreground",
+                  urgency === "critical" && "ring-2 ring-destructive/50",
+                  urgency === "high" && "ring-2 ring-stage-hesitant/50"
+                )}>
+                  {lead.avatar}
+                </div>
+                {lead.unread > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 h-5 w-5 rounded-full bg-primary text-[10px] font-bold text-primary-foreground flex items-center justify-center animate-pulse">
+                    {lead.unread}
+                  </span>
+                )}
               </div>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <span className={cn("h-1.5 w-1.5 rounded-full shrink-0", STAGE_COLORS[lead.stage])} />
-                <span className={cn("text-[11px] truncate", STAGE_TEXT_COLORS[lead.stage])}>
-                  {lead.stage}
-                </span>
-                <span className="text-[11px] text-muted-foreground/60 truncate">
-                  · {lead.username}
-                </span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-foreground truncate">{lead.name}</span>
+                  <span className={cn(
+                    "text-xs font-bold shrink-0 ml-2",
+                    urgency === "critical" ? "text-destructive" :
+                    urgency === "high" ? "text-stage-hesitant" :
+                    "text-muted-foreground"
+                  )}>
+                    {formatTimeInStage(lead.stageEnteredAt)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className={cn("h-1.5 w-1.5 rounded-full shrink-0", STAGE_COLORS[lead.stage])} />
+                  <span className={cn("text-[11px] truncate", STAGE_TEXT_COLORS[lead.stage])}>
+                    {lead.stage}
+                  </span>
+                  <span className="text-[11px] text-muted-foreground/60 truncate">
+                    · {lead.username}
+                  </span>
+                </div>
               </div>
-            </div>
-          </button>
-        ))}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
