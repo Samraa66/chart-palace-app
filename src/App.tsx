@@ -9,6 +9,7 @@ import Signals from "./pages/Signals";
 import Providers from "./pages/Providers";
 import Analytics from "./pages/Analytics";
 import SettingsPage from "./pages/SettingsPage";
+import CRMDashboard from "./pages/CRMDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
         <AppLayout>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/crm" element={<CRMDashboard />} />
             <Route path="/signals" element={<Signals />} />
             <Route path="/providers" element={<Providers />} />
             <Route path="/analytics" element={<Analytics />} />
