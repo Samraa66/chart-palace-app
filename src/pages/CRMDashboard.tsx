@@ -3,9 +3,8 @@ import { ArrowLeft, PanelRightOpen } from "lucide-react";
 import { LeadList } from "@/components/crm/LeadList";
 import { ChatPanel } from "@/components/crm/ChatPanel";
 import { LeadDetails } from "@/components/crm/LeadDetails";
-import { leads as initialLeads, messages as initialMessages, Lead, Message } from "@/data/crmData";
+import { leads as initialLeads, messages as initialMessages, Lead, Message, formatTimeInStage } from "@/data/crmData";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
 
 type MobileView = "list" | "chat" | "details";
 
@@ -20,10 +19,23 @@ export default function CRMDashboard() {
   const selectedLead = leads.find((l) => l.id === selectedLeadId) ?? null;
   const leadMessages = selectedLeadId ? allMessages.filter((m) => m.leadId === selectedLeadId) : [];
 
-  // Sorted leads for "next lead" logic
   const sortedLeads = [...leads].sort(
     (a, b) => new Date(a.stageEnteredAt).getTime() - new Date(b.stageEnteredAt).getTime()
   );
+
+  // Flow info for the chat panel
+  const getFlowInfo = useCallback(() => {
+    const currentIndex = sortedLeads.findIndex((l) => l.id === selectedLeadId);
+    const nextIndex = (currentIndex + 1) % sortedLeads.length;
+    const nextLead = sortedLeads[nextIndex];
+    const waitingCount = leads.filter((l) => l.unread > 0 || l.id !== selectedLeadId).length;
+    if (!nextLead) return null;
+    return {
+      waitingCount,
+      nextLeadName: nextLead.name,
+      nextLeadTime: formatTimeInStage(nextLead.stageEnteredAt),
+    };
+  }, [sortedLeads, selectedLeadId, leads]);
 
   const handleSelectLead = useCallback((id: string) => {
     setSelectedLeadId(id);
@@ -51,12 +63,9 @@ export default function CRMDashboard() {
     const currentIndex = sortedLeads.findIndex((l) => l.id === selectedLeadId);
     const nextIndex = (currentIndex + 1) % sortedLeads.length;
     const nextLead = sortedLeads[nextIndex];
-    if (nextLead) {
-      handleSelectLead(nextLead.id);
-    }
+    if (nextLead) handleSelectLead(nextLead.id);
   }, [sortedLeads, selectedLeadId, handleSelectLead]);
 
-  // Mobile layout
   if (isMobile) {
     return (
       <div className="h-[calc(100vh-3.5rem)] flex flex-col">
@@ -74,7 +83,7 @@ export default function CRMDashboard() {
               </button>
             </div>
             <div className="flex-1 min-h-0">
-              <ChatPanel lead={selectedLead} messages={leadMessages} onSendMessage={handleSendMessage} onNextLead={handleNextLead} />
+              <ChatPanel lead={selectedLead} messages={leadMessages} onSendMessage={handleSendMessage} onNextLead={handleNextLead} flowInfo={getFlowInfo()} />
             </div>
           </div>
         )}
@@ -95,7 +104,6 @@ export default function CRMDashboard() {
     );
   }
 
-  // Desktop layout
   return (
     <div className="h-[calc(100vh-3.5rem)] flex -m-4 md:-m-6">
       <div className="w-80 shrink-0">
@@ -103,7 +111,7 @@ export default function CRMDashboard() {
       </div>
       <div className="flex-1 min-w-0">
         {selectedLead ? (
-          <ChatPanel lead={selectedLead} messages={leadMessages} onSendMessage={handleSendMessage} onNextLead={handleNextLead} />
+          <ChatPanel lead={selectedLead} messages={leadMessages} onSendMessage={handleSendMessage} onNextLead={handleNextLead} flowInfo={getFlowInfo()} />
         ) : (
           <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
             Select a lead to start chatting
