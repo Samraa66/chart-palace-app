@@ -110,14 +110,19 @@ export const messages: Message[] = [
   { id: "m19", leadId: "8", text: "I've registered! What now?", sender: "client", timestamp: hoursAgo(2) },
 ];
 
-export const QUICK_REPLIES = [
-  "Any experience trading?",
-  "Is there something holding you back?",
+export const STAGE_ACTION_REPLIES = [
   "Here is your link to open your account 👉",
   "Our win rate this month is 81%",
   "Would you like to see some results?",
+];
+
+export const FOLLOWUP_REPLIES = [
+  "Any experience trading?",
+  "Is there something holding you back?",
   "What's your preferred lot size?",
 ];
+
+export const QUICK_REPLIES = [...STAGE_ACTION_REPLIES, ...FOLLOWUP_REPLIES];
 
 export function formatTimeInStage(stageEnteredAt: string): string {
   const diff = now.getTime() - new Date(stageEnteredAt).getTime();
