@@ -1,4 +1,4 @@
-import { LayoutDashboard, Radio, Users, BarChart3, Settings, Bot } from "lucide-react";
+import { LayoutDashboard, Radio, Users, BarChart3, Settings, Bot, MessageSquare } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import {
@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/sidebar";
 
 const items = [
+  { title: "CRM", url: "/crm", icon: MessageSquare },
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Signals", url: "/signals", icon: Radio },
   { title: "Channels", url: "/providers", icon: Users },
