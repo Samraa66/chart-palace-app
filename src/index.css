@@ -49,6 +49,13 @@
     --signal-buy: 152 60% 48%;
     --signal-sell: 0 72% 56%;
     --signal-pending: 38 92% 50%;
+
+    /* CRM Stage colors */
+    --stage-new: 210 100% 56%;
+    --stage-qualified: 45 93% 47%;
+    --stage-hesitant: 25 95% 53%;
+    --stage-link-sent: 270 60% 60%;
+    --stage-deposited: 152 60% 48%;
     --chart-1: 152 60% 48%;
     --chart-2: 200 70% 50%;
     --chart-3: 38 92% 50%;

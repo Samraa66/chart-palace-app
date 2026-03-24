@@ -65,6 +65,13 @@ export default {
           sell: "hsl(var(--signal-sell))",
           pending: "hsl(var(--signal-pending))",
         },
+        stage: {
+          new: "hsl(var(--stage-new))",
+          qualified: "hsl(var(--stage-qualified))",
+          hesitant: "hsl(var(--stage-hesitant))",
+          "link-sent": "hsl(var(--stage-link-sent))",
+          deposited: "hsl(var(--stage-deposited))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
