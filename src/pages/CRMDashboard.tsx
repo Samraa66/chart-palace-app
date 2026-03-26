@@ -20,7 +20,7 @@ export default function CRMDashboard() {
   const leadMessages = selectedLeadId ? allMessages.filter((m) => m.leadId === selectedLeadId) : [];
 
   const sortedLeads = [...leads].sort(
-    (a, b) => new Date(a.stageEnteredAt).getTime() - new Date(b.stageEnteredAt).getTime()
+    (a, b) => new Date(a.stageEnteredAt).getTime() - new Date(b.stageEnteredAt).getTime(),
   );
 
   const getFlowInfo = useCallback(() => {
@@ -36,23 +36,29 @@ export default function CRMDashboard() {
     };
   }, [sortedLeads, selectedLeadId, leads]);
 
-  const handleSelectLead = useCallback((id: string) => {
-    setSelectedLeadId(id);
-    setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, unread: 0 } : l)));
-    if (isMobile) setMobileView("chat");
-  }, [isMobile]);
+  const handleSelectLead = useCallback(
+    (id: string) => {
+      setSelectedLeadId(id);
+      setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, unread: 0 } : l)));
+      if (isMobile) setMobileView("chat");
+    },
+    [isMobile],
+  );
 
-  const handleSendMessage = useCallback((text: string) => {
-    if (!selectedLeadId) return;
-    const msg: Message = {
-      id: `m-${Date.now()}`,
-      leadId: selectedLeadId,
-      text,
-      sender: "operator",
-      timestamp: new Date().toISOString(),
-    };
-    setAllMessages((prev) => [...prev, msg]);
-  }, [selectedLeadId]);
+  const handleSendMessage = useCallback(
+    (text: string) => {
+      if (!selectedLeadId) return;
+      const msg: Message = {
+        id: `m-${Date.now()}`,
+        leadId: selectedLeadId,
+        text,
+        sender: "operator",
+        timestamp: new Date().toISOString(),
+      };
+      setAllMessages((prev) => [...prev, msg]);
+    },
+    [selectedLeadId],
+  );
 
   const handleUpdateLead = useCallback((updated: Lead) => {
     setLeads((prev) => prev.map((l) => (l.id === updated.id ? updated : l)));
