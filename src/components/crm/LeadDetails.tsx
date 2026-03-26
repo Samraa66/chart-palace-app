@@ -1,4 +1,4 @@
-import { ChevronRight, AlertTriangle, StickyNote } from "lucide-react";
+import { ChevronRight, AlertTriangle, StickyNote, Send } from "lucide-react";
 import { useState } from "react";
 import { Lead, Stage, STAGES, STAGE_COLORS, STAGE_TEXT_COLORS, formatTimeInStage } from "@/data/crmData";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,12 @@ export function LeadDetails({ lead, onUpdateLead }: LeadDetailsProps) {
   const moveToNext = () => {
     if (currentIdx < STAGES.length - 1) {
       onUpdateLead({ ...lead, stage: STAGES[currentIdx + 1], stageEnteredAt: new Date().toISOString() });
+    }
+  };
+
+  const handleStageOverride = (stage: Stage) => {
+    if (stage !== lead.stage) {
+      onUpdateLead({ ...lead, stage, stageEnteredAt: new Date().toISOString() });
     }
   };
 
@@ -74,18 +80,40 @@ export function LeadDetails({ lead, onUpdateLead }: LeadDetailsProps) {
 
         {/* Actions */}
         <div className="ios-card p-4 space-y-2.5">
+          <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold">Actions</p>
           <Button onClick={moveToNext} disabled={currentIdx >= STAGES.length - 1} className="w-full rounded-xl" size="sm">
             <ChevronRight className="h-4 w-4 mr-1" />
             Move to {currentIdx < STAGES.length - 1 ? STAGES[currentIdx + 1] : "—"}
           </Button>
-          <div className="grid grid-cols-2 gap-2">
-            <Button variant="outline" size="sm" className="text-xs rounded-xl">
-              Override Stage
-            </Button>
-            <Button variant="outline" size="sm" className="text-xs text-destructive hover:text-destructive rounded-xl">
-              <AlertTriangle className="h-3 w-3 mr-1" />
-              Escalate
-            </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full text-xs text-destructive hover:text-destructive rounded-xl"
+          >
+            <AlertTriangle className="h-3 w-3 mr-1" />
+            Escalate to Walid
+          </Button>
+        </div>
+
+        {/* Manual stage override */}
+        <div className="ios-card p-4 space-y-2">
+          <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold">Override Stage</p>
+          <div className="grid grid-cols-2 gap-1.5">
+            {STAGES.map((s, i) => (
+              <button
+                key={s}
+                onClick={() => handleStageOverride(s)}
+                className={cn(
+                  "flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-[11px] font-medium transition-colors text-left",
+                  s === lead.stage
+                    ? "bg-accent text-foreground font-bold ring-1 ring-primary/30"
+                    : "bg-secondary text-muted-foreground active:bg-accent"
+                )}
+              >
+                <span className={cn("h-1.5 w-1.5 rounded-full shrink-0", STAGE_COLORS[s])} />
+                <span className="truncate">{s}</span>
+              </button>
+            ))}
           </div>
         </div>
 

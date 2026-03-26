@@ -1,6 +1,6 @@
-import { Send, SkipForward } from "lucide-react";
+import { Send, SkipForward, ChevronDown, AlertTriangle } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import { Lead, Message, STAGE_ACTION_REPLIES, FOLLOWUP_REPLIES, STAGES, STAGE_COLORS, STAGE_TEXT_COLORS, formatMessageTime, formatTimeInStage } from "@/data/crmData";
+import { Lead, Message, STAGE_ACTION_REPLIES, FOLLOWUP_REPLIES, STAGES, Stage, STAGE_COLORS, STAGE_TEXT_COLORS, formatMessageTime, formatTimeInStage } from "@/data/crmData";
 import { cn } from "@/lib/utils";
 
 interface ChatPanelProps {
@@ -8,12 +8,14 @@ interface ChatPanelProps {
   messages: Message[];
   onSendMessage: (text: string) => void;
   onNextLead?: () => void;
+  onUpdateLead?: (updated: Lead) => void;
   flowInfo?: { waitingCount: number; nextLeadName: string; nextLeadTime: string } | null;
 }
 
-export function ChatPanel({ lead, messages, onSendMessage, onNextLead, flowInfo }: ChatPanelProps) {
+export function ChatPanel({ lead, messages, onSendMessage, onNextLead, onUpdateLead, flowInfo }: ChatPanelProps) {
   const [input, setInput] = useState("");
   const [stageToast, setStageToast] = useState<string | null>(null);
+  const [showStageMenu, setShowStageMenu] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -60,6 +62,17 @@ export function ChatPanel({ lead, messages, onSendMessage, onNextLead, flowInfo 
     }
   };
 
+  const handleStageChange = (newStage: Stage) => {
+    if (onUpdateLead && newStage !== lead.stage) {
+      onUpdateLead({ ...lead, stage: newStage, stageEnteredAt: new Date().toISOString() });
+    }
+    setShowStageMenu(false);
+  };
+
+  const handleEscalate = () => {
+    onSendMessage("🚨 Escalating this lead to Walid for review.");
+  };
+
   const currentIdx = STAGES.indexOf(lead.stage);
 
   return (
@@ -77,33 +90,81 @@ export function ChatPanel({ lead, messages, onSendMessage, onNextLead, flowInfo 
         </div>
       )}
 
-      {/* Header - iOS style */}
-      <div className="flex items-center gap-3 px-4 py-2.5 border-b border-border bg-card/80 backdrop-blur-xl">
-        <div className="h-9 w-9 rounded-full bg-secondary flex items-center justify-center text-xs font-semibold text-foreground shrink-0">
-          {lead.avatar}
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-foreground truncate leading-tight">{lead.name}</p>
-          <div className="flex items-center gap-1.5 mt-0.5">
-            <span className={cn("h-1.5 w-1.5 rounded-full", STAGE_COLORS[lead.stage])} />
-            <span className={cn("text-[11px] font-medium", STAGE_TEXT_COLORS[lead.stage])}>
-              {lead.stage}
-            </span>
-            <span className="text-[11px] text-muted-foreground">
-              · {formatTimeInStage(lead.stageEnteredAt)}
-            </span>
+      {/* Header - iOS style with stage change + escalate */}
+      <div className="border-b border-border bg-card/80 backdrop-blur-xl">
+        <div className="flex items-center gap-3 px-4 py-2.5">
+          <div className="h-9 w-9 rounded-full bg-secondary flex items-center justify-center text-xs font-semibold text-foreground shrink-0">
+            {lead.avatar}
           </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold text-foreground truncate leading-tight">{lead.name}</p>
+            <p className="text-[11px] text-muted-foreground truncate">{lead.username} · Telegram</p>
+          </div>
+          {onNextLead && (
+            <button
+              onClick={onNextLead}
+              className="h-8 px-3 rounded-full bg-primary text-primary-foreground flex items-center gap-1 text-xs font-bold shrink-0 active:scale-95 transition-transform"
+            >
+              Next
+              <SkipForward className="h-3.5 w-3.5" />
+            </button>
+          )}
         </div>
-        {/* Next lead button (compact on mobile) */}
-        {onNextLead && (
+
+        {/* Stage bar + Escalate */}
+        <div className="flex items-center gap-2 px-4 pb-2">
+          {/* Manual stage change button */}
+          <div className="relative flex-1">
+            <button
+              onClick={() => setShowStageMenu(!showStageMenu)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-secondary active:bg-accent transition-colors w-full"
+            >
+              <span className={cn("h-2 w-2 rounded-full shrink-0", STAGE_COLORS[lead.stage])} />
+              <span className={cn("text-[12px] font-semibold truncate", STAGE_TEXT_COLORS[lead.stage])}>
+                Stage {currentIdx + 1} — {lead.stage}
+              </span>
+              <span className="text-[11px] text-muted-foreground ml-auto shrink-0">
+                {formatTimeInStage(lead.stageEnteredAt)}
+              </span>
+              <ChevronDown className={cn("h-3.5 w-3.5 text-muted-foreground shrink-0 transition-transform", showStageMenu && "rotate-180")} />
+            </button>
+
+            {/* Stage dropdown */}
+            {showStageMenu && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-xl shadow-xl z-50 overflow-hidden">
+                {STAGES.map((s, i) => (
+                  <button
+                    key={s}
+                    onClick={() => handleStageChange(s)}
+                    className={cn(
+                      "w-full flex items-center gap-2 px-3 py-2.5 text-left transition-colors",
+                      s === lead.stage ? "bg-accent" : "active:bg-secondary",
+                      i < STAGES.length - 1 && "border-b border-[hsl(var(--ios-separator))]"
+                    )}
+                  >
+                    <span className={cn("h-2 w-2 rounded-full shrink-0", STAGE_COLORS[s])} />
+                    <span className={cn("text-[13px] font-medium", s === lead.stage ? "text-foreground font-bold" : "text-muted-foreground")}>
+                      Stage {i + 1} — {s}
+                    </span>
+                    {s === lead.stage && (
+                      <span className="ml-auto text-primary text-xs font-bold">✓</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Escalate to Walid */}
           <button
-            onClick={onNextLead}
-            className="h-8 px-3 rounded-full bg-primary text-primary-foreground flex items-center gap-1 text-xs font-bold shrink-0 active:scale-95 transition-transform"
+            onClick={handleEscalate}
+            className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-destructive/10 text-destructive text-[12px] font-bold active:bg-destructive/20 transition-colors shrink-0"
           >
-            Next
-            <SkipForward className="h-3.5 w-3.5" />
+            <AlertTriangle className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Escalate to Walid</span>
+            <span className="sm:hidden">Escalate</span>
           </button>
-        )}
+        </div>
       </div>
 
       {/* Stage toast */}
@@ -111,6 +172,11 @@ export function ChatPanel({ lead, messages, onSendMessage, onNextLead, flowInfo 
         <div className="mx-4 mt-2 px-3 py-1.5 rounded-xl bg-primary/15 border border-primary/30 text-xs font-semibold text-primary text-center animate-in fade-in slide-in-from-top-2 duration-200">
           ✓ {stageToast}
         </div>
+      )}
+
+      {/* Close stage menu on tap outside */}
+      {showStageMenu && (
+        <div className="fixed inset-0 z-40" onClick={() => setShowStageMenu(false)} />
       )}
 
       {/* Messages */}
@@ -164,7 +230,7 @@ export function ChatPanel({ lead, messages, onSendMessage, onNextLead, flowInfo 
         </div>
       </div>
 
-      {/* Input bar - iOS style */}
+      {/* Input bar */}
       <div className="px-3 py-2 border-t border-border safe-bottom flex gap-2 items-center bg-card/80 backdrop-blur-xl">
         <input
           ref={inputRef}
