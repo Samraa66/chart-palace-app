@@ -26,7 +26,6 @@ export function ChatPanel({ lead, messages, onSendMessage, onNextLead, flowInfo 
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Watch for stage changes
   const prevStageRef = useRef(lead.stage);
   useEffect(() => {
     if (prevStageRef.current !== lead.stage) {
@@ -65,11 +64,11 @@ export function ChatPanel({ lead, messages, onSendMessage, onNextLead, flowInfo 
 
   return (
     <div className="flex flex-col h-full bg-background">
-      {/* Flow indicator bar */}
+      {/* Flow indicator */}
       {flowInfo && flowInfo.waitingCount > 0 && (
         <div className="flex items-center justify-between px-4 py-1.5 bg-primary/10 border-b border-primary/20 text-xs">
           <span className="text-primary font-semibold">
-            {flowInfo.waitingCount} leads waiting
+            {flowInfo.waitingCount} waiting
           </span>
           <span className="text-muted-foreground">
             Next: <span className="text-foreground font-medium">{flowInfo.nextLeadName}</span>
@@ -78,50 +77,57 @@ export function ChatPanel({ lead, messages, onSendMessage, onNextLead, flowInfo 
         </div>
       )}
 
-      {/* Header with stage */}
-      <div className="flex items-center gap-3 px-4 py-2 border-b border-border bg-card/50">
-        <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center text-xs font-medium text-foreground shrink-0">
+      {/* Header - iOS style */}
+      <div className="flex items-center gap-3 px-4 py-2.5 border-b border-border bg-card/80 backdrop-blur-xl">
+        <div className="h-9 w-9 rounded-full bg-secondary flex items-center justify-center text-xs font-semibold text-foreground shrink-0">
           {lead.avatar}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium text-foreground truncate leading-tight">{lead.name}</p>
-          <p className="text-[10px] text-muted-foreground leading-tight">{lead.username} · Telegram</p>
-        </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary">
-            <span className={cn("h-2 w-2 rounded-full", STAGE_COLORS[lead.stage])} />
-            <span className={cn("text-[11px] font-semibold", STAGE_TEXT_COLORS[lead.stage])}>
-              Stage {currentIdx + 1} — {lead.stage}
+          <p className="text-sm font-semibold text-foreground truncate leading-tight">{lead.name}</p>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <span className={cn("h-1.5 w-1.5 rounded-full", STAGE_COLORS[lead.stage])} />
+            <span className={cn("text-[11px] font-medium", STAGE_TEXT_COLORS[lead.stage])}>
+              {lead.stage}
+            </span>
+            <span className="text-[11px] text-muted-foreground">
+              · {formatTimeInStage(lead.stageEnteredAt)}
             </span>
           </div>
-          <span className="text-[11px] text-muted-foreground font-medium">
-            {formatTimeInStage(lead.stageEnteredAt)}
-          </span>
         </div>
+        {/* Next lead button (compact on mobile) */}
+        {onNextLead && (
+          <button
+            onClick={onNextLead}
+            className="h-8 px-3 rounded-full bg-primary text-primary-foreground flex items-center gap-1 text-xs font-bold shrink-0 active:scale-95 transition-transform"
+          >
+            Next
+            <SkipForward className="h-3.5 w-3.5" />
+          </button>
+        )}
       </div>
 
-      {/* Stage change toast */}
+      {/* Stage toast */}
       {stageToast && (
-        <div className="mx-4 mt-2 px-3 py-1.5 rounded-lg bg-primary/15 border border-primary/30 text-xs font-semibold text-primary text-center animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="mx-4 mt-2 px-3 py-1.5 rounded-xl bg-primary/15 border border-primary/30 text-xs font-semibold text-primary text-center animate-in fade-in slide-in-from-top-2 duration-200">
           ✓ {stageToast}
         </div>
       )}
 
-      {/* Messages — tighter density */}
-      <div className="flex-1 overflow-y-auto px-4 py-2 space-y-1.5">
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-1.5">
         {messages.map((msg) => (
           <div key={msg.id} className={cn("flex", msg.sender === "operator" ? "justify-end" : "justify-start")}>
             <div
               className={cn(
-                "max-w-[75%] px-3 py-1.5 rounded-2xl text-[13px] leading-snug",
+                "max-w-[80%] px-3.5 py-2 text-[14px] leading-snug",
                 msg.sender === "operator"
-                  ? "bg-primary text-primary-foreground rounded-br-md"
-                  : "bg-secondary text-foreground rounded-bl-md"
+                  ? "bg-primary text-primary-foreground rounded-2xl rounded-br-md"
+                  : "bg-card text-foreground rounded-2xl rounded-bl-md"
               )}
             >
               <p>{msg.text}</p>
               <p className={cn(
-                "text-[9px] mt-0.5",
+                "text-[10px] mt-0.5",
                 msg.sender === "operator" ? "text-primary-foreground/50" : "text-muted-foreground/70"
               )}>
                 {formatMessageTime(msg.timestamp)}
@@ -132,14 +138,14 @@ export function ChatPanel({ lead, messages, onSendMessage, onNextLead, flowInfo 
         <div ref={bottomRef} />
       </div>
 
-      {/* Quick replies — grouped */}
-      <div className="px-3 py-1.5 border-t border-border/50 space-y-1">
+      {/* Quick replies */}
+      <div className="px-3 py-1.5 border-t border-border/50 space-y-1.5">
         <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
           {STAGE_ACTION_REPLIES.map((qr) => (
             <button
               key={qr}
               onClick={() => handleQuickReply(qr)}
-              className="shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-bold bg-primary/15 text-primary hover:bg-primary/25 transition-colors whitespace-nowrap"
+              className="shrink-0 px-3 py-2 rounded-xl text-[12px] font-bold bg-primary/15 text-primary active:bg-primary/25 transition-colors whitespace-nowrap"
             >
               {qr}
             </button>
@@ -150,7 +156,7 @@ export function ChatPanel({ lead, messages, onSendMessage, onNextLead, flowInfo 
             <button
               key={qr}
               onClick={() => handleQuickReply(qr)}
-              className="shrink-0 px-2.5 py-1 rounded-lg text-[11px] bg-secondary text-muted-foreground hover:text-foreground hover:bg-accent transition-colors whitespace-nowrap"
+              className="shrink-0 px-2.5 py-1.5 rounded-xl text-[12px] bg-secondary text-muted-foreground active:bg-accent transition-colors whitespace-nowrap"
             >
               {qr}
             </button>
@@ -158,32 +164,23 @@ export function ChatPanel({ lead, messages, onSendMessage, onNextLead, flowInfo 
         </div>
       </div>
 
-      {/* Input + Send + Next Lead */}
-      <div className="px-3 py-2 border-t border-border flex gap-2 items-center">
+      {/* Input bar - iOS style */}
+      <div className="px-3 py-2 border-t border-border safe-bottom flex gap-2 items-center bg-card/80 backdrop-blur-xl">
         <input
           ref={inputRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Type a message… (Ctrl+Enter → next lead)"
-          className="flex-1 bg-secondary rounded-xl px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring"
+          placeholder="Message..."
+          className="flex-1 bg-secondary rounded-full px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring"
         />
         <button
           onClick={handleSend}
           disabled={!input.trim()}
-          className="h-10 w-10 rounded-xl bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors disabled:opacity-40 shrink-0"
+          className="h-10 w-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center active:scale-95 transition-transform disabled:opacity-40 shrink-0"
         >
           <Send className="h-4 w-4" />
         </button>
-        {onNextLead && (
-          <button
-            onClick={onNextLead}
-            className="h-10 px-4 rounded-xl bg-primary text-primary-foreground flex items-center gap-1.5 hover:bg-primary/90 transition-colors text-xs font-bold shrink-0"
-          >
-            Next
-            <SkipForward className="h-4 w-4" />
-          </button>
-        )}
       </div>
     </div>
   );

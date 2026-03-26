@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { ArrowLeft, PanelRightOpen } from "lucide-react";
+import { ArrowLeft, PanelRightOpen, X } from "lucide-react";
 import { LeadList } from "@/components/crm/LeadList";
 import { ChatPanel } from "@/components/crm/ChatPanel";
 import { LeadDetails } from "@/components/crm/LeadDetails";
@@ -23,7 +23,6 @@ export default function CRMDashboard() {
     (a, b) => new Date(a.stageEnteredAt).getTime() - new Date(b.stageEnteredAt).getTime()
   );
 
-  // Flow info for the chat panel
   const getFlowInfo = useCallback(() => {
     const currentIndex = sortedLeads.findIndex((l) => l.id === selectedLeadId);
     const nextIndex = (currentIndex + 1) % sortedLeads.length;
@@ -66,34 +65,53 @@ export default function CRMDashboard() {
     if (nextLead) handleSelectLead(nextLead.id);
   }, [sortedLeads, selectedLeadId, handleSelectLead]);
 
+  // Mobile layout
   if (isMobile) {
     return (
-      <div className="h-[calc(100vh-3.5rem)] flex flex-col">
+      <div className="h-[100dvh] flex flex-col bg-background">
         {mobileView === "list" && (
           <LeadList leads={leads} selectedLeadId={selectedLeadId} onSelectLead={handleSelectLead} />
         )}
         {mobileView === "chat" && selectedLead && (
           <div className="flex flex-col h-full">
-            <div className="flex items-center gap-2 px-2 py-1 border-b border-border bg-card">
-              <button onClick={() => setMobileView("list")} className="p-2 hover:bg-accent rounded-lg">
-                <ArrowLeft className="h-4 w-4 text-muted-foreground" />
+            {/* iOS-style navigation bar */}
+            <div className="safe-top flex items-center justify-between px-1 py-1 border-b border-border bg-card/80 backdrop-blur-xl">
+              <button
+                onClick={() => setMobileView("list")}
+                className="flex items-center gap-0.5 px-2 py-2 text-primary active:opacity-70 transition-opacity"
+              >
+                <ArrowLeft className="h-5 w-5" />
+                <span className="text-sm font-medium">Leads</span>
               </button>
-              <button onClick={() => setMobileView("details")} className="ml-auto p-2 hover:bg-accent rounded-lg">
-                <PanelRightOpen className="h-4 w-4 text-muted-foreground" />
+              <button
+                onClick={() => setMobileView("details")}
+                className="px-3 py-2 text-primary active:opacity-70 transition-opacity"
+              >
+                <PanelRightOpen className="h-5 w-5" />
               </button>
             </div>
             <div className="flex-1 min-h-0">
-              <ChatPanel lead={selectedLead} messages={leadMessages} onSendMessage={handleSendMessage} onNextLead={handleNextLead} flowInfo={getFlowInfo()} />
+              <ChatPanel
+                lead={selectedLead}
+                messages={leadMessages}
+                onSendMessage={handleSendMessage}
+                onNextLead={handleNextLead}
+                flowInfo={getFlowInfo()}
+              />
             </div>
           </div>
         )}
         {mobileView === "details" && selectedLead && (
           <div className="flex flex-col h-full">
-            <div className="flex items-center px-2 py-1 border-b border-border bg-card">
-              <button onClick={() => setMobileView("chat")} className="p-2 hover:bg-accent rounded-lg">
-                <ArrowLeft className="h-4 w-4 text-muted-foreground" />
+            <div className="safe-top flex items-center px-1 py-1 border-b border-border bg-card/80 backdrop-blur-xl">
+              <button
+                onClick={() => setMobileView("chat")}
+                className="flex items-center gap-0.5 px-2 py-2 text-primary active:opacity-70 transition-opacity"
+              >
+                <ArrowLeft className="h-5 w-5" />
+                <span className="text-sm font-medium">Chat</span>
               </button>
-              <span className="text-sm font-medium text-foreground ml-2">Lead Details</span>
+              <span className="text-sm font-semibold text-foreground ml-auto mr-3">Details</span>
             </div>
             <div className="flex-1 overflow-y-auto">
               <LeadDetails lead={selectedLead} onUpdateLead={handleUpdateLead} />
@@ -104,14 +122,21 @@ export default function CRMDashboard() {
     );
   }
 
+  // Desktop layout
   return (
-    <div className="h-[calc(100vh-3.5rem)] flex -m-4 md:-m-6">
-      <div className="w-80 shrink-0">
+    <div className="h-screen flex">
+      <div className="w-80 shrink-0 border-r border-border">
         <LeadList leads={leads} selectedLeadId={selectedLeadId} onSelectLead={handleSelectLead} />
       </div>
       <div className="flex-1 min-w-0">
         {selectedLead ? (
-          <ChatPanel lead={selectedLead} messages={leadMessages} onSendMessage={handleSendMessage} onNextLead={handleNextLead} flowInfo={getFlowInfo()} />
+          <ChatPanel
+            lead={selectedLead}
+            messages={leadMessages}
+            onSendMessage={handleSendMessage}
+            onNextLead={handleNextLead}
+            flowInfo={getFlowInfo()}
+          />
         ) : (
           <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
             Select a lead to start chatting

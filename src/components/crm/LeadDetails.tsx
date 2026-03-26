@@ -25,86 +25,88 @@ export function LeadDetails({ lead, onUpdateLead }: LeadDetailsProps) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-card border-l border-border p-4 space-y-5 overflow-y-auto">
-      {/* Lead info */}
-      <div className="text-center">
-        <div className="h-14 w-14 rounded-full bg-secondary flex items-center justify-center text-lg font-semibold text-foreground mx-auto">
-          {lead.avatar}
+    <div className="flex flex-col h-full bg-[hsl(var(--ios-grouped-bg))] md:bg-card md:border-l md:border-border overflow-y-auto">
+      <div className="p-5 space-y-4">
+        {/* Lead info */}
+        <div className="ios-card p-5 text-center">
+          <div className="h-16 w-16 rounded-full bg-secondary flex items-center justify-center text-xl font-bold text-foreground mx-auto">
+            {lead.avatar}
+          </div>
+          <h3 className="text-base font-bold text-foreground mt-3">{lead.name}</h3>
+          <p className="text-xs text-muted-foreground">{lead.username}</p>
         </div>
-        <h3 className="text-sm font-semibold text-foreground mt-2">{lead.name}</h3>
-        <p className="text-[11px] text-muted-foreground">{lead.username}</p>
-      </div>
 
-      {/* Current stage */}
-      <div className="glass-card p-3 space-y-2">
-        <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Current Stage</p>
-        <div className="flex items-center gap-2">
-          <span className={cn("h-2.5 w-2.5 rounded-full", STAGE_COLORS[lead.stage])} />
-          <span className={cn("text-sm font-semibold", STAGE_TEXT_COLORS[lead.stage])}>
-            Stage {currentIdx + 1} — {lead.stage}
-          </span>
+        {/* Current stage */}
+        <div className="ios-card p-4 space-y-2">
+          <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold">Current Stage</p>
+          <div className="flex items-center gap-2">
+            <span className={cn("h-2.5 w-2.5 rounded-full", STAGE_COLORS[lead.stage])} />
+            <span className={cn("text-sm font-bold", STAGE_TEXT_COLORS[lead.stage])}>
+              Stage {currentIdx + 1} — {lead.stage}
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            In stage for <span className="text-foreground font-semibold">{formatTimeInStage(lead.stageEnteredAt)}</span>
+          </p>
         </div>
-        <p className="text-[11px] text-muted-foreground">
-          In stage for <span className="text-foreground font-medium">{formatTimeInStage(lead.stageEnteredAt)}</span>
-        </p>
-      </div>
 
-      {/* Stage timeline */}
-      <div className="space-y-2">
-        <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Pipeline Progress</p>
-        <div className="flex items-center gap-1">
-          {STAGES.map((s, i) => (
-            <div key={s} className="flex items-center flex-1">
-              <div
-                className={cn(
-                  "h-2 flex-1 rounded-full transition-colors",
-                  i <= currentIdx ? STAGE_COLORS[s] : "bg-secondary"
-                )}
-                title={s}
-              />
-            </div>
-          ))}
+        {/* Pipeline */}
+        <div className="ios-card p-4 space-y-2">
+          <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold">Pipeline</p>
+          <div className="flex items-center gap-1">
+            {STAGES.map((s, i) => (
+              <div key={s} className="flex-1">
+                <div
+                  className={cn(
+                    "h-2 rounded-full transition-colors",
+                    i <= currentIdx ? STAGE_COLORS[s] : "bg-secondary"
+                  )}
+                  title={s}
+                />
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-between text-[10px] text-muted-foreground">
+            <span>New</span>
+            <span>VIP</span>
+          </div>
         </div>
-        <div className="flex justify-between text-[10px] text-muted-foreground">
-          <span>New</span>
-          <span>VIP</span>
-        </div>
-      </div>
 
-      {/* Actions */}
-      <div className="space-y-2">
-        <Button onClick={moveToNext} disabled={currentIdx >= STAGES.length - 1} className="w-full" size="sm">
-          <ChevronRight className="h-4 w-4 mr-1" />
-          Move to {currentIdx < STAGES.length - 1 ? STAGES[currentIdx + 1] : "—"}
-        </Button>
-        <div className="grid grid-cols-2 gap-2">
-          <Button variant="outline" size="sm" className="text-xs">
-            Override Stage
+        {/* Actions */}
+        <div className="ios-card p-4 space-y-2.5">
+          <Button onClick={moveToNext} disabled={currentIdx >= STAGES.length - 1} className="w-full rounded-xl" size="sm">
+            <ChevronRight className="h-4 w-4 mr-1" />
+            Move to {currentIdx < STAGES.length - 1 ? STAGES[currentIdx + 1] : "—"}
           </Button>
-          <Button variant="outline" size="sm" className="text-xs text-destructive hover:text-destructive">
-            <AlertTriangle className="h-3 w-3 mr-1" />
-            Escalate
-          </Button>
+          <div className="grid grid-cols-2 gap-2">
+            <Button variant="outline" size="sm" className="text-xs rounded-xl">
+              Override Stage
+            </Button>
+            <Button variant="outline" size="sm" className="text-xs text-destructive hover:text-destructive rounded-xl">
+              <AlertTriangle className="h-3 w-3 mr-1" />
+              Escalate
+            </Button>
+          </div>
         </div>
-      </div>
 
-      {/* Notes */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-1.5">
-          <StickyNote className="h-3.5 w-3.5 text-muted-foreground" />
-          <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Notes</p>
+        {/* Notes */}
+        <div className="ios-card p-4 space-y-2">
+          <div className="flex items-center gap-1.5">
+            <StickyNote className="h-3.5 w-3.5 text-muted-foreground" />
+            <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold">Notes</p>
+          </div>
+          <Textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Add notes about this lead..."
+            className="min-h-[80px] bg-secondary border-none text-sm resize-none rounded-xl"
+          />
+          {notes !== lead.notes && (
+            <Button size="sm" variant="secondary" onClick={saveNotes} className="w-full text-xs rounded-xl">
+              Save Notes
+            </Button>
+          )}
         </div>
-        <Textarea
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          placeholder="Add notes about this lead..."
-          className="min-h-[80px] bg-secondary border-none text-sm resize-none"
-        />
-        {notes !== lead.notes && (
-          <Button size="sm" variant="secondary" onClick={saveNotes} className="w-full text-xs">
-            Save Notes
-          </Button>
-        )}
       </div>
     </div>
   );
