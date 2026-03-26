@@ -138,11 +138,6 @@ export default function CRMDashboard() {
             onNextLead={handleNextLead}
             onUpdateLead={handleUpdateLead}
             flowInfo={getFlowInfo()}
-            lead={selectedLead}
-            messages={leadMessages}
-            onSendMessage={handleSendMessage}
-            onNextLead={handleNextLead}
-            flowInfo={getFlowInfo()}
           />
         ) : (
           <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
