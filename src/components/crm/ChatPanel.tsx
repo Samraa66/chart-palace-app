@@ -161,7 +161,7 @@ export function ChatPanel({ lead, messages, onSendMessage, onNextLead, onUpdateL
             className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-destructive/10 text-destructive text-[12px] font-bold active:bg-destructive/20 transition-colors shrink-0"
           >
             <AlertTriangle className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Escalate to Walid</span>
+            <span className="hidden sm:inline">Escalate to {BUSINESS_OWNER_NAME}</span>
             <span className="sm:hidden">Escalate</span>
           </button>
         </div>

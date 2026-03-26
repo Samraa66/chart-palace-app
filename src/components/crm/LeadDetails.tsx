@@ -91,7 +91,7 @@ export function LeadDetails({ lead, onUpdateLead }: LeadDetailsProps) {
             className="w-full text-xs text-destructive hover:text-destructive rounded-xl"
           >
             <AlertTriangle className="h-3 w-3 mr-1" />
-            Escalate to Walid
+            Escalate to {BUSINESS_OWNER_NAME}
           </Button>
         </div>
 

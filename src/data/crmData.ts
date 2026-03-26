@@ -1,3 +1,6 @@
+// Business owner name — change this to customize the escalation button
+export const BUSINESS_OWNER_NAME = "Walid";
+
 export type Stage =
   | "New"
   | "Contacted"
