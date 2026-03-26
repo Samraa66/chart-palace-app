@@ -1,6 +1,6 @@
 import { Send, SkipForward, ChevronDown, AlertTriangle } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import { Lead, Message, STAGE_ACTION_REPLIES, FOLLOWUP_REPLIES, STAGES, Stage, STAGE_COLORS, STAGE_TEXT_COLORS, formatMessageTime, formatTimeInStage } from "@/data/crmData";
+import { Lead, Message, STAGE_ACTION_REPLIES, FOLLOWUP_REPLIES, STAGES, Stage, STAGE_COLORS, STAGE_TEXT_COLORS, BUSINESS_OWNER_NAME, formatMessageTime, formatTimeInStage } from "@/data/crmData";
 import { cn } from "@/lib/utils";
 
 interface ChatPanelProps {
