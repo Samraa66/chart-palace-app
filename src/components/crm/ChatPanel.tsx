@@ -1,6 +1,6 @@
 import { Send, SkipForward, ChevronDown, AlertTriangle } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import { Lead, Message, STAGE_ACTION_REPLIES, FOLLOWUP_REPLIES, STAGES, Stage, STAGE_COLORS, STAGE_TEXT_COLORS, formatMessageTime, formatTimeInStage } from "@/data/crmData";
+import { Lead, Message, STAGE_ACTION_REPLIES, FOLLOWUP_REPLIES, STAGES, Stage, STAGE_COLORS, STAGE_TEXT_COLORS, BUSINESS_OWNER_NAME, formatMessageTime, formatTimeInStage } from "@/data/crmData";
 import { cn } from "@/lib/utils";
 
 interface ChatPanelProps {
@@ -70,7 +70,7 @@ export function ChatPanel({ lead, messages, onSendMessage, onNextLead, onUpdateL
   };
 
   const handleEscalate = () => {
-    onSendMessage("🚨 Escalating this lead to Walid for review.");
+    onSendMessage(`🚨 Escalating this lead to ${BUSINESS_OWNER_NAME} for review.`);
   };
 
   const currentIdx = STAGES.indexOf(lead.stage);
@@ -161,7 +161,7 @@ export function ChatPanel({ lead, messages, onSendMessage, onNextLead, onUpdateL
             className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-destructive/10 text-destructive text-[12px] font-bold active:bg-destructive/20 transition-colors shrink-0"
           >
             <AlertTriangle className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Escalate to Walid</span>
+            <span className="hidden sm:inline">Escalate to {BUSINESS_OWNER_NAME}</span>
             <span className="sm:hidden">Escalate</span>
           </button>
         </div>

@@ -1,6 +1,6 @@
 import { ChevronRight, AlertTriangle, StickyNote, Send } from "lucide-react";
 import { useState } from "react";
-import { Lead, Stage, STAGES, STAGE_COLORS, STAGE_TEXT_COLORS, formatTimeInStage } from "@/data/crmData";
+import { Lead, Stage, STAGES, STAGE_COLORS, STAGE_TEXT_COLORS, BUSINESS_OWNER_NAME, formatTimeInStage } from "@/data/crmData";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
@@ -91,7 +91,7 @@ export function LeadDetails({ lead, onUpdateLead }: LeadDetailsProps) {
             className="w-full text-xs text-destructive hover:text-destructive rounded-xl"
           >
             <AlertTriangle className="h-3 w-3 mr-1" />
-            Escalate to Walid
+            Escalate to {BUSINESS_OWNER_NAME}
           </Button>
         </div>
 
