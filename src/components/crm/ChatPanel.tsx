@@ -70,7 +70,7 @@ export function ChatPanel({ lead, messages, onSendMessage, onNextLead, onUpdateL
   };
 
   const handleEscalate = () => {
-    onSendMessage("🚨 Escalating this lead to Walid for review.");
+    onSendMessage(`🚨 Escalating this lead to ${BUSINESS_OWNER_NAME} for review.`);
   };
 
   const currentIdx = STAGES.indexOf(lead.stage);
