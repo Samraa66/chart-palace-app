@@ -96,6 +96,12 @@ export default function CRMDashboard() {
                 messages={leadMessages}
                 onSendMessage={handleSendMessage}
                 onNextLead={handleNextLead}
+                onUpdateLead={handleUpdateLead}
+                flowInfo={getFlowInfo()}
+                lead={selectedLead}
+                messages={leadMessages}
+                onSendMessage={handleSendMessage}
+                onNextLead={handleNextLead}
                 flowInfo={getFlowInfo()}
               />
             </div>
