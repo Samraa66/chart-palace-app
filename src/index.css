@@ -6,65 +6,65 @@
 
 @layer base {
   :root {
-    --background: 220 20% 7%;
-    --foreground: 210 20% 92%;
+    --background: 0 0% 98%;
+    --foreground: 220 15% 15%;
 
-    --card: 220 18% 10%;
-    --card-foreground: 210 20% 92%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 15% 15%;
 
-    --popover: 220 18% 10%;
-    --popover-foreground: 210 20% 92%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 15% 15%;
 
-    --primary: 152 60% 48%;
-    --primary-foreground: 220 20% 7%;
+    --primary: 152 55% 42%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 16% 14%;
-    --secondary-foreground: 210 20% 80%;
+    --secondary: 220 14% 94%;
+    --secondary-foreground: 220 15% 35%;
 
-    --muted: 220 14% 16%;
-    --muted-foreground: 215 12% 52%;
+    --muted: 220 14% 92%;
+    --muted-foreground: 220 10% 46%;
 
-    --accent: 220 16% 18%;
-    --accent-foreground: 210 20% 92%;
+    --accent: 220 14% 96%;
+    --accent-foreground: 220 15% 15%;
 
-    --destructive: 0 72% 56%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 220 14% 16%;
-    --input: 220 14% 18%;
-    --ring: 152 60% 48%;
+    --border: 220 13% 90%;
+    --input: 220 13% 91%;
+    --ring: 152 55% 42%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 220 20% 5%;
-    --sidebar-foreground: 215 12% 52%;
-    --sidebar-primary: 152 60% 48%;
-    --sidebar-primary-foreground: 220 20% 7%;
-    --sidebar-accent: 220 16% 12%;
-    --sidebar-accent-foreground: 210 20% 92%;
-    --sidebar-border: 220 14% 12%;
-    --sidebar-ring: 152 60% 48%;
+    --sidebar-background: 0 0% 99%;
+    --sidebar-foreground: 220 10% 46%;
+    --sidebar-primary: 152 55% 42%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 96%;
+    --sidebar-accent-foreground: 220 15% 15%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 152 55% 42%;
 
     /* Custom tokens */
-    --signal-buy: 152 60% 48%;
-    --signal-sell: 0 72% 56%;
+    --signal-buy: 152 55% 40%;
+    --signal-sell: 0 72% 51%;
     --signal-pending: 38 92% 50%;
 
     /* CRM Stage colors */
-    --stage-new: 210 100% 56%;
-    --stage-qualified: 45 93% 47%;
-    --stage-hesitant: 25 95% 53%;
-    --stage-link-sent: 270 60% 60%;
-    --stage-deposited: 152 60% 48%;
-    --chart-1: 152 60% 48%;
-    --chart-2: 200 70% 50%;
+    --stage-new: 210 90% 50%;
+    --stage-qualified: 45 85% 47%;
+    --stage-hesitant: 25 90% 50%;
+    --stage-link-sent: 270 55% 55%;
+    --stage-deposited: 152 55% 42%;
+    --chart-1: 152 55% 42%;
+    --chart-2: 210 80% 50%;
     --chart-3: 38 92% 50%;
-    --chart-4: 280 60% 60%;
-    --chart-5: 0 72% 56%;
+    --chart-4: 270 55% 55%;
+    --chart-5: 0 72% 51%;
 
     /* iOS-style tokens */
-    --ios-separator: 220 14% 13%;
-    --ios-grouped-bg: 220 20% 5%;
+    --ios-separator: 220 13% 90%;
+    --ios-grouped-bg: 220 14% 97%;
   }
 }
 
