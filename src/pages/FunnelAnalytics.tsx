@@ -71,10 +71,10 @@ export default function FunnelAnalytics() {
           <div className="h-[220px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={daily} barSize={20}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 14% 16%)" />
-                <XAxis dataKey="date" tick={{ fill: "hsl(215 12% 52%)", fontSize: 11 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: "hsl(215 12% 52%)", fontSize: 11 }} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={tooltipStyle} />
+                <CartesianGrid strokeDasharray="3 3" stroke={chartGridColor} />
+                <XAxis dataKey="date" tick={chartTickStyle} axisLine={false} tickLine={false} />
+                <YAxis tick={chartTickStyle} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={chartTooltipStyle} />
                 <Bar dataKey="leads" fill="hsl(210 100% 56%)" radius={[4, 4, 0, 0]} name="New Leads" />
                 <Bar dataKey="converted" fill="hsl(152 60% 48%)" radius={[4, 4, 0, 0]} name="Converted" />
               </BarChart>
@@ -92,10 +92,10 @@ export default function FunnelAnalytics() {
           <div className="h-[200px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={weekly}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 14% 16%)" />
-                <XAxis dataKey="week" tick={{ fill: "hsl(215 12% 52%)", fontSize: 11 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: "hsl(215 12% 52%)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => `${v}%`} />
-                <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => `${v}%`} />
+                <CartesianGrid strokeDasharray="3 3" stroke={chartGridColor} />
+                <XAxis dataKey="week" tick={chartTickStyle} axisLine={false} tickLine={false} />
+                <YAxis tick={chartTickStyle} axisLine={false} tickLine={false} tickFormatter={(v) => `${v}%`} />
+                <Tooltip contentStyle={chartTooltipStyle} formatter={(v: number) => `${v}%`} />
                 <Line type="monotone" dataKey="conversionRate" stroke="hsl(152 60% 48%)" strokeWidth={2.5} dot={{ fill: "hsl(152 60% 48%)", r: 4 }} />
               </LineChart>
             </ResponsiveContainer>
