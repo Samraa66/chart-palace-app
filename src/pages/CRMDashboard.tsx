@@ -74,7 +74,7 @@ export default function CRMDashboard() {
   // Mobile layout
   if (isMobile) {
     return (
-      <div className="h-[100dvh] flex flex-col bg-background">
+      <div className="h-full flex flex-col bg-background">
         {mobileView === "list" && (
           <LeadList leads={leads} selectedLeadId={selectedLeadId} onSelectLead={handleSelectLead} />
         )}
@@ -131,7 +131,7 @@ export default function CRMDashboard() {
 
   // Desktop layout
   return (
-    <div className="h-screen flex">
+    <div className="h-full flex">
       <div className="w-80 shrink-0 border-r border-border">
         <LeadList leads={leads} selectedLeadId={selectedLeadId} onSelectLead={handleSelectLead} />
       </div>
