@@ -4,14 +4,7 @@ import { formatLastActive, MEMBER_STATUS_CONFIG } from "@/data/analyticsData";
 import { Activity, AlertTriangle, Crown, UserCheck } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-
-const tooltipStyle = {
-  backgroundColor: "hsl(220 18% 10%)",
-  border: "1px solid hsl(220 14% 16%)",
-  borderRadius: "8px",
-  color: "hsl(210 20% 92%)",
-  fontSize: "13px",
-};
+import { chartTooltipStyle, chartGridColor, chartTickStyle } from "@/lib/chartTheme";
 
 export default function MemberActivity() {
   const { data: members, isLoading: loadingMembers } = useVIPMembers();

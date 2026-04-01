@@ -2,14 +2,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { useDailyLeads, useWeeklyLeads, useFunnelStages } from "@/hooks/useAnalytics";
 import { TrendingUp, TrendingDown, Users, Target } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-
-const tooltipStyle = {
-  backgroundColor: "hsl(220 18% 10%)",
-  border: "1px solid hsl(220 14% 16%)",
-  borderRadius: "8px",
-  color: "hsl(210 20% 92%)",
-  fontSize: "13px",
-};
+import { chartTooltipStyle, chartGridColor, chartTickStyle } from "@/lib/chartTheme";
 
 const FUNNEL_COLORS = [
   "hsl(210, 100%, 56%)", // New
