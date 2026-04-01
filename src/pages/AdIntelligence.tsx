@@ -3,14 +3,7 @@ import { useCampaigns, useDailyAdSpend } from "@/hooks/useAnalytics";
 import { DollarSign, MousePointerClick, TrendingUp, Zap } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-
-const tooltipStyle = {
-  backgroundColor: "hsl(220 18% 10%)",
-  border: "1px solid hsl(220 14% 16%)",
-  borderRadius: "8px",
-  color: "hsl(210 20% 92%)",
-  fontSize: "13px",
-};
+import { chartTooltipStyle, chartGridColor, chartTickStyle } from "@/lib/chartTheme";
 
 export default function AdIntelligence() {
   const { data: campaigns, isLoading: loadingCampaigns } = useCampaigns();
@@ -57,10 +50,10 @@ export default function AdIntelligence() {
           <div className="h-[220px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={adSpend} barSize={16}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 14% 16%)" />
-                <XAxis dataKey="date" tick={{ fill: "hsl(215 12% 52%)", fontSize: 11 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: "hsl(215 12% 52%)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
-                <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => `$${v}`} />
+                <CartesianGrid strokeDasharray="3 3" stroke={chartGridColor} />
+                <XAxis dataKey="date" tick={chartTickStyle} axisLine={false} tickLine={false} />
+                <YAxis tick={chartTickStyle} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
+                <Tooltip contentStyle={chartTooltipStyle} formatter={(v: number) => `$${v}`} />
                 <Bar dataKey="spend" fill="hsl(0 72% 56%)" radius={[4, 4, 0, 0]} name="Ad Spend" />
                 <Bar dataKey="revenue" fill="hsl(152 60% 48%)" radius={[4, 4, 0, 0]} name="Revenue" />
               </BarChart>
